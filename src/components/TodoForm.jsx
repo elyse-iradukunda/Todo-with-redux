@@ -1,11 +1,22 @@
 import { useState } from "react";
 import "../index.css";
+import { useDispatch } from "react-redux";
+import { todos } from "../features/todoSlice";
 
 function TodoForm() {
+
+    const Dispatch= useDispatch();
+
+
   const [task, setTasks] = useState([]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    Dispatch(todos({
+        title: e.target.task.value,
+
+    }))
 
     const values = e.target.task.value;
     if (!values) return;
@@ -40,10 +51,11 @@ function TodoForm() {
       <div className="list-container">
         <ul>
           {task.map((elm, i) => {
-            return <li key={i} className="list-item">{elm} <button className="delete-btn" type="button" onClick={()=>handleDelete(i)}>Delete</button> </li>;
+            return <li key={i} className="list-item"> <input type="checkbox" name="" id={i} /> {elm} <button className="delete-btn" type="button" onClick={()=>handleDelete(i)}>Delete</button> </li>;
           })}
         </ul>
-      </div>
+      </div>  
+       <h2>Here is Total tasks: {task.length}</h2>
     </div>
   );
 }
