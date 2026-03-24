@@ -40,7 +40,7 @@ function TodoForm() {
       <div className="list-container">
         <ul>
           {task.map((elm, i) => {
-            return <li key={i} className="list-item">{elm} <button type="button" onClick={()=>handleDelete(i)}>Delete</button> </li>;
+            return <li key={i} className="list-item">{elm} <button className="delete-btn" type="button" onClick={()=>handleDelete(i)}>Delete</button> </li>;
           })}
         </ul>
       </div>

@@ -70,3 +70,27 @@
 .list-item:last-child {
   margin-bottom: 0;
 }
+
+
+.delete-btn {
+  background: #ff4d4f;
+  color: white;
+  border: none;
+  float: right;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s ease;
+}
+
+/* hover */
+.delete-btn:hover {
+  background: #d9363e;
+  transform: scale(1.05);
+}
+
+/* click effect */
+.delete-btn:active {
+  transform: scale(0.95);
+}
