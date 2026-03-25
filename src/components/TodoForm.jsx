@@ -1,11 +1,15 @@
 import "../index.css";
 import { useDispatch, useSelector } from "react-redux";
-import { addTodo, deleteTodo, toggleTodo } from "../features/todoSlice";
+import { useState } from "react";
+import { addTodo, deleteTodo, toggleTodo, editTodo } from "../features/todoSlice";
 
 function TodoForm() {
 
-const task = useSelector((state) => state.todos || []);
+  const task = useSelector((state) => state.todos || []);
   const dispatch = useDispatch();
+
+  const [editId, setEditId] = useState(null);
+  const [editValue, setEditValue] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -15,6 +19,18 @@ const task = useSelector((state) => state.todos || []);
 
     dispatch(addTodo({ title: value }));
     e.target.reset();
+  };
+
+  const handleEdit = (elm) => {
+    setEditId(elm.id);
+    setEditValue(elm.title);
+  };
+
+  const handleSave = (id) => {
+    if (!editValue) return;
+    dispatch(editTodo({ id, title: editValue }));
+    setEditId(null);
+    setEditValue("");
   };
 
   return (
@@ -36,27 +52,70 @@ const task = useSelector((state) => state.todos || []);
 
       <div className="list-container">
         <ul>
-          {task.map((elm) => (
-            <li key={elm.id} className="list-item">
-              
-              <input
-                type="checkbox"
-                checked={elm.isCompleted}
-                onChange={() => dispatch(toggleTodo(elm.id))}
-              />
+         {task.map((elm) => (
+  <li key={elm.id} className="list-item">
+    
+    <div className="left">
+      <input
+        type="checkbox"
+        checked={elm.isCompleted || false}
+        onChange={() => dispatch(toggleTodo(elm.id))}
+        className="checkbox"
+      />
 
-              {elm.title}
+      {editId === elm.id ? (
+        <input
+          value={editValue}
+          onChange={(e) => setEditValue(e.target.value)}
+          className="edit-input"
+        />
+      ) : (
+        <span className={elm.isCompleted ? "completed-text" : "text"}>
+          {elm.title}
+        </span>
+      )}
+    </div>
 
-              <button
-                className="delete-btn"
-                type="button"
-                onClick={() => dispatch(deleteTodo(elm.id))}
-              >
-                Delete
-              </button>
+    <div className="actions">
+      {editId === elm.id ? (
+        <>
+          <button
+            type="button"
+            onClick={() => handleSave(elm.id)}
+            className="save-btn"
+          >
+            Save
+          </button>
 
-            </li>
-          ))}
+          <button
+            type="button"
+            onClick={() => setEditId(null)}
+            className="cancel-btn"
+          >
+            Cancel
+          </button>
+        </>
+      ) : (
+        <button
+          type="button"
+          onClick={() => handleEdit(elm)}
+          className="edit-btn"
+        >
+          Edit
+        </button>
+      )}
+
+      <button
+        className="delete-btn"
+        type="button"
+        onClick={() => dispatch(deleteTodo(elm.id))}
+      >
+        Delete
+      </button>
+    </div>
+
+  </li>
+))}
         </ul>
       </div>
 
