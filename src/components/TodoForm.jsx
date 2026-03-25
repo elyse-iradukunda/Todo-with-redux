@@ -4,7 +4,7 @@ import { addTodo, deleteTodo, toggleTodo } from "../features/todoSlice";
 
 function TodoForm() {
 
-  const task = useSelector((state) => state.todo || []);
+const task = useSelector((state) => state.todos || []);
   const dispatch = useDispatch();
 
   const handleSubmit = (e) => {
