@@ -1,35 +1,21 @@
-import { useState } from "react";
 import "../index.css";
-import { useDispatch } from "react-redux";
-import { todos } from "../features/todoSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { addTodo, deleteTodo, toggleTodo } from "../features/todoSlice";
 
 function TodoForm() {
 
-    const Dispatch= useDispatch();
-
-
-  const [task, setTasks] = useState([]);
+  const task = useSelector((state) => state.todo || []);
+  const dispatch = useDispatch();
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    Dispatch(todos({
-        title: e.target.task.value,
+    const value = e.target.task.value;
+    if (!value) return;
 
-    }))
-
-    const values = e.target.task.value;
-    if (!values) return;
-
-    setTasks([...task, values]);
+    dispatch(addTodo({ title: value }));
     e.target.reset();
   };
-
-  const handleDelete = (index)=>{
-       
-    const del = task.filter((_,i)=> i!==index);
-    setTasks(del);
-  }
 
   return (
     <div className="container">
@@ -50,12 +36,31 @@ function TodoForm() {
 
       <div className="list-container">
         <ul>
-          {task.map((elm, i) => {
-            return <li key={i} className="list-item"> <input type="checkbox" name="" id={i} /> {elm} <button className="delete-btn" type="button" onClick={()=>handleDelete(i)}>Delete</button> </li>;
-          })}
+          {task.map((elm) => (
+            <li key={elm.id} className="list-item">
+              
+              <input
+                type="checkbox"
+                checked={elm.isCompleted}
+                onChange={() => dispatch(toggleTodo(elm.id))}
+              />
+
+              {elm.title}
+
+              <button
+                className="delete-btn"
+                type="button"
+                onClick={() => dispatch(deleteTodo(elm.id))}
+              >
+                Delete
+              </button>
+
+            </li>
+          ))}
         </ul>
-      </div>  
-       <h2>Here is Total tasks: {task.length}</h2>
+      </div>
+
+      <h2>Here is Total tasks: {task.length}</h2>
     </div>
   );
 }
